@@ -77,6 +77,7 @@
 #define EMISSION_JITTER         25      /* percent */
 #define NAME_VALID_TIME		1800    /* seconds */
 #define NAMESERVER_COUNT        3
+#define ENTRY_VALID_TIME  (NAME_VALID_TIME * 1000) /* milliseconds */
 
 #define NAME_PROTOCOL_VERSION	1
 
@@ -100,6 +101,7 @@ struct name_entry {
   uint16_t type;
   uint16_t len;
   char *name;
+  uint32_t expires;
   struct name_entry *next;             /* linked list */
 };
 
@@ -139,9 +141,11 @@ bool olsr_parser(union olsr_message *, struct interface_olsr *, union olsr_ip_ad
 /* callback for periodic timer */
 void olsr_namesvc_gen(void *);
 
-int encap_namemsg(struct namemsg *);
+int encap_namemsg(struct namemsg *, int maxsize, int* cursor);
 
 struct name_entry *add_name_to_list(struct name_entry *my_list, const char *value, int type, const union olsr_ip_addr *ip);
+
+bool is_nameentry_valid(struct name_entry *entry, int type);
 
 struct name_entry *remove_nonvalid_names_from_list(struct name_entry *my_list, int type);
 
@@ -192,6 +196,8 @@ void name_constructor(void);
 void name_destructor(void);
 
 int name_init(void);
+
+void free_old_list_entries(struct list_node *list);
 
 #endif /* _NAMESERVICE_PLUGIN */
 

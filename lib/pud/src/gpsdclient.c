@@ -370,6 +370,10 @@ void nmeaInfoFromGpsd(struct gps_data_t *gpsdata, NmeaInfo *info, struct GpsdCon
           );
 
   gpsdata->set &= ~STATUS_SET; /* always valid */
+  if (gpsdata-> fix.status == STATUS_NO_FIX) {
+    nmeaInfoClear(info);
+    return;
+  }
 
   if (!gpsdata->set) {
     return;
