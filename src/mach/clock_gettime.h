@@ -51,7 +51,9 @@
 #include <time.h>
 
 #define CLOCK_MONOTONIC 1	/* Per Linux's time.h */
+#ifndef __APPLE__
 typedef int clockid_t; /* Per Linux's types.h, posix_types.h */
+#endif
 
 /* Per the POSIX Realtime Extensions */
 int clock_gettime(clockid_t clock_id, struct timespec *tp);
